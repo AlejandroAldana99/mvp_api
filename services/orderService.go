@@ -9,7 +9,6 @@ import (
 
 const millisecondsEq = 1000000.0
 
-// CandidateData :
 type OrderService struct {
 	Repository repositories.IOrderRepository
 }
