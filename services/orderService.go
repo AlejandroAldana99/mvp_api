@@ -1,10 +1,6 @@
 package services
 
 import (
-	"net/http"
-	"time"
-
-	"github.com/AlejandroAldana99/mvp_api/config"
 	"github.com/AlejandroAldana99/mvp_api/errors"
 	"github.com/AlejandroAldana99/mvp_api/libs/logger"
 	"github.com/AlejandroAldana99/mvp_api/models"
@@ -13,71 +9,42 @@ import (
 
 const millisecondsEq = 1000000.0
 
-type IHealthCandidateData interface {
-	CheckPod(chanHealth chan models.HealthComponentDetail)
-}
-
-type HealthCandidateData struct{}
-
 // CandidateData :
-type CandidateData struct {
+type OrderService struct {
 	Repository repositories.IOrderRepository
 }
 
 // GetCandidateData :
-func (service CandidateData) GetCandidateData(userID string) (models.CandidateData, error) {
-	var data models.CandidateData
+func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
+	var order models.OrderData
 	var err error
-	data, err = service.Repository.GetCandidateData(userID)
+	order, err = service.Repository.GetOrder(orderID)
 
 	if err != nil {
-		var sqlErr error
-		data, sqlErr = service.Repository.GetCandidateDataFromSQL(userID)
-
-		if sqlErr != nil {
-			logger.Error("services", "GetCandidateData", sqlErr.Error())
-			return data, errors.HandleServiceError(sqlErr)
-		}
-		go service.RefreshCandidateData(userID, data)
-		return data, err
+		logger.Error("services", "GetOrder", err.Error())
+		return order, errors.HandleServiceError(err)
 	}
-	data.CalculateAge()
-	data.BuildPhotoURL(config.GetConfig().S3URL)
-	return data, nil
+
+	return order, nil
 }
 
-// RefreshCandidateData :
-func (service CandidateData) RefreshCandidateData(userID string, data models.CandidateData) error {
-
-	data.UserID = userID
-
-	err := service.Repository.RefreshCandidateData(data)
+func (service OrderService) CreateOrder(data models.OrderData) error {
+	data.Package[0] = completeSize(data.Package[0])
+	err := service.Repository.CreateOrder(data)
 	if err != nil {
-		return err
+		logger.Error("services", "CreateOrder", err.Error())
+		return errors.HandleServiceError(err)
 	}
 
 	return nil
 }
 
-func updateHealthDetails(details *models.HealthComponentDetail, now time.Time, statusCode int) {
-	details.Status = "fail"
-	if statusCode == http.StatusOK {
-		details.Status = "pass"
-	}
-	details.MetricValue = float32(time.Since(now).Nanoseconds()) / millisecondsEq
-	details.MetricUnit = "ms"
-}
-
-// CheckPod :
-func (service *HealthCandidateData) CheckPod(chanHealth chan models.HealthComponentDetail) {
-	now := time.Now()
-	details := models.HealthComponentDetail{
-		Name: "instance",
-		Type: "pod",
-		Time: now,
+func (service OrderService) UpdateOrderStatus(orderID string, status string) error {
+	err := service.Repository.UpdateOrderStatus(orderID, status)
+	if err != nil {
+		logger.Error("services", "UpdateOrderStatus", err.Error())
+		return errors.HandleServiceError(err)
 	}
 
-	statusCode := 200
-	updateHealthDetails(&details, now, statusCode)
-	chanHealth <- details
+	return nil
 }
