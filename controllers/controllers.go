@@ -12,12 +12,25 @@ import (
 // CandidateData :
 type ControllerData struct {
 	ServiceOrder services.IOrderService
+	ServiceUser  services.IUserService
 }
 
 // GetCandidateData :
 func (controller ControllerData) GetOrderData(c echo.Context) error {
 	userID := strings.ToLower(c.Param("orderID"))
-	data, err := controller.ServiceOrder.GetCandidateData(userID)
+	data, err := controller.ServiceOrder.GetOrder(userID)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (controller ControllerData) CreateOrderData(c echo.Context) error {
+	var order models.OrderData
+	userID := strings.ToLower(c.Param("orderID"))
+	data, err := controller.ServiceOrder.GetOrder(userID)
 
 	if err != nil {
 		return err

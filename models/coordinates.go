@@ -1,6 +1,6 @@
 package models
 
 type CoordinatesData struct {
-	Latitude  string `json:"lat"`
-	Longitude string `json:"lng"`
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
 }
