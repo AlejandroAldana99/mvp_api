@@ -14,14 +14,14 @@ import (
 )
 
 type OrderData struct {
-	Config          config.Configuration
-	MongoCollection *mongo.Collection
+	Config  config.Configuration
+	MongoDB *mongo.Database
 }
 
 func (repo OrderData) GetOrder(orderID string) (models.OrderData, error) {
 	t := time.Now()
 	var order models.OrderData
-	err := repo.MongoCollection.FindOne(context.TODO(), bson.D{{"orderid", orderID}}).
+	err := repo.MongoDB.Collection("orders").FindOne(context.TODO(), bson.D{{"orderid", orderID}}).
 		Decode(&order)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (repo OrderData) GetOrder(orderID string) (models.OrderData, error) {
 func (repo OrderData) CreateOrder(data models.OrderData) error {
 
 	t := time.Now()
-	_, err := repo.MongoCollection.InsertOne(context.TODO(), data)
+	_, err := repo.MongoDB.Collection("orders").InsertOne(context.TODO(), data)
 	if err != nil {
 		logger.Error("repositories", "CreateOrder", err.Error())
 		return errors.HandleServiceError(err)
@@ -53,7 +53,7 @@ func (repo OrderData) UpdateOrderStatus(orderID string, status string) error {
 	filter := bson.D{{"status", status}}
 	update := bson.D{{"$set", bson.D{{"orderid", orderID}}}}
 
-	_, err := repo.MongoCollection.UpdateOne(context.TODO(), filter, update)
+	_, err := repo.MongoDB.Collection("orders").UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		logger.Error("repositories", "GetOrderData", err.Error())
 		return errors.HandleServiceError(err)

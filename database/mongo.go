@@ -24,9 +24,9 @@ func NewMongoDBClient() *mongo.Client {
 	return client
 }
 
-func NewMongoCollection(client *mongo.Client) *mongo.Collection {
+func NewMongoCollection(client *mongo.Client) *mongo.Database {
 	conf := config.GetConfig()
-	c := client.Database(conf.DatabaseName).Collection(conf.CollectionName)
+	c := client.Database(conf.DatabaseName)
 
 	if c == nil {
 		logger.Fatal("database", "NewMongoClient", "unable to retrieve collection")

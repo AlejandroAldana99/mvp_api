@@ -13,14 +13,14 @@ import (
 )
 
 type UserData struct {
-	Config          config.Configuration
-	MongoCollection *mongo.Collection
+	Config  config.Configuration
+	MongoDB *mongo.Database
 }
 
 func (repo UserData) GetUser(userID string) (models.UserData, error) {
 	t := time.Now()
 	var user models.UserData
-	err := repo.MongoCollection.FindOne(context.TODO(), bson.D{{"userid", userID}}).
+	err := repo.MongoDB.Collection("users").FindOne(context.TODO(), bson.D{{"userid", userID}}).
 		Decode(&user)
 
 	if err != nil {
@@ -36,7 +36,7 @@ func (repo UserData) GetUser(userID string) (models.UserData, error) {
 func (repo UserData) CreateUser(data models.UserData) error {
 
 	t := time.Now()
-	_, err := repo.MongoCollection.InsertOne(context.TODO(), data)
+	_, err := repo.MongoDB.Collection("users").InsertOne(context.TODO(), data)
 	if err != nil {
 		logger.Error("repositories", "CraeteUser", err.Error())
 		return errors.HandleServiceError(err)
