@@ -21,46 +21,42 @@ type OrderData struct {
 func (repo OrderData) GetOrder(orderID string) (models.OrderData, error) {
 	t := time.Now()
 	var order models.OrderData
-	cErr := repo.MongoCollection.FindOne(context.TODO(), bson.D{{"orderid", orderID}}).
+	err := repo.MongoCollection.FindOne(context.TODO(), bson.D{{"orderid", orderID}}).
 		Decode(&order)
 
-	if cErr != nil {
-		logger.Error("repositories", "GetOrderData", cErr.Error())
-		return models.OrderData{}, errors.HandleServiceError(cErr)
+	if err != nil {
+		logger.Error("repositories", "GetOrderData", err.Error())
+		return models.OrderData{}, errors.HandleServiceError(err)
 	}
 
-	logger.Performance("repository", "GetCandidateData", t)
+	logger.Performance("repository", "GetOrder", t)
 
 	return order, nil
 }
 
 func (repo OrderData) CreateOrder(data models.OrderData) error {
 
+	t := time.Now()
 	_, err := repo.MongoCollection.InsertOne(context.TODO(), data)
 	if err != nil {
 		logger.Error("repositories", "CreateOrder", err.Error())
 		return errors.HandleServiceError(err)
 	}
 
+	logger.Performance("repository", "CreateOrder", t)
+
 	return nil
 }
 
-func (repo OrderData) RefreshCandidateData(data models.OrderData) error {
-	//var err error
-	//result := repo.MongoCollection.FindOne(context.TODO(), bson.D{{"userid", data.UserID}})
+func (repo OrderData) UpdateOrderStatus(orderID string, status string) error {
 
-	_, dErr := repo.MongoCollection.DeleteOne(context.TODO(), bson.D{{"userid", data.OrderID}})
+	filter := bson.D{{"status", status}}
+	update := bson.D{{"$set", bson.D{{"orderid", orderID}}}}
 
-	if dErr != nil {
-		logger.Error("repositories", "RefreshProfileCandidateData", dErr.Error())
-		return errors.HandleServiceError(dErr)
-	}
-
-	_, iErr := repo.MongoCollection.InsertOne(context.TODO(), data)
-
-	if iErr != nil {
-		logger.Error("repositories", "RefreshProfileCandidateData", iErr.Error())
-		return errors.HandleServiceError(iErr)
+	_, err := repo.MongoCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		logger.Error("repositories", "GetOrderData", err.Error())
+		return errors.HandleServiceError(err)
 	}
 
 	return nil
