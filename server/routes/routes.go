@@ -64,19 +64,19 @@ func init() {
 			Route{
 				Method:      http.MethodGet,
 				Pattern:     "/mvp/user",
-				HandlerFunc: middleware.ParamsValidator(candidateData.RefreshCandidateData),
+				HandlerFunc: middleware.ParamsValidator(controller.GetUserData),
 				Name:        "CreateUser",
 			},
 			Route{
 				Method:      http.MethodPost,
 				Pattern:     "/mvp/user",
-				HandlerFunc: middleware.ParamsValidator(candidateData.RefreshCandidateData),
+				HandlerFunc: middleware.ParamsValidator(controller.CreateUserData),
 				Name:        "CreateUser",
 			},
 			Route{
 				Method:      http.MethodPost,
-				Pattern:     "/mvp/login",
-				HandlerFunc: middleware.ParamsValidator(candidateData.RefreshCandidateData),
+				Pattern:     "/mvp/user/login",
+				HandlerFunc: middleware.ParamsValidator(controller.Login),
 				Name:        "Login",
 			},
 		}
