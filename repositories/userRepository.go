@@ -12,15 +12,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type UserData struct {
+type UserRepository struct {
 	Config  config.Configuration
 	MongoDB *mongo.Database
 }
 
-func (repo UserData) GetUser(userID string) (models.UserData, error) {
+func (repo UserRepository) GetUser(userID string) (models.UserData, error) {
 	t := time.Now()
 	var user models.UserData
-	err := repo.MongoDB.Collection("users").FindOne(context.TODO(), bson.D{{"userid", userID}}).
+	err := repo.MongoDB.Collection("users").FindOne(context.TODO(), bson.D{{Key: "userid", Value: userID}}).
 		Decode(&user)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func (repo UserData) GetUser(userID string) (models.UserData, error) {
 	return user, nil
 }
 
-func (repo UserData) CreateUser(data models.UserData) error {
+func (repo UserRepository) CreateUser(data models.UserData) error {
 
 	t := time.Now()
 	_, err := repo.MongoDB.Collection("users").InsertOne(context.TODO(), data)

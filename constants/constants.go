@@ -16,6 +16,7 @@ const (
 	OnWayStatus         = "en_ruta"
 	DeliveredStatus     = "entregada"
 	CancelStatus        = "cancelado"
+	GeneralStatus       = "Done"
 )
 
 var StatusList = map[string]bool{

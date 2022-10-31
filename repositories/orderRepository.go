@@ -12,12 +12,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type OrderData struct {
+type OrderRepository struct {
 	Config  config.Configuration
 	MongoDB *mongo.Database
 }
 
-func (repo OrderData) GetOrder(orderID string) (models.OrderData, error) {
+func (repo OrderRepository) GetOrder(orderID string) (models.OrderData, error) {
 	t := time.Now()
 	var order models.OrderData
 	err := repo.MongoDB.Collection("orders").FindOne(context.TODO(), bson.D{{Key: "orderid", Value: orderID}}).
@@ -33,7 +33,7 @@ func (repo OrderData) GetOrder(orderID string) (models.OrderData, error) {
 	return order, nil
 }
 
-func (repo OrderData) CreateOrder(data models.OrderData) error {
+func (repo OrderRepository) CreateOrder(data models.OrderData) error {
 
 	t := time.Now()
 	_, err := repo.MongoDB.Collection("orders").InsertOne(context.TODO(), data)
@@ -47,7 +47,7 @@ func (repo OrderData) CreateOrder(data models.OrderData) error {
 	return nil
 }
 
-func (repo OrderData) UpdateOrderStatus(orderID string, status string) error {
+func (repo OrderRepository) UpdateOrderStatus(orderID string, status string) error {
 	filter := bson.D{{Key: "orderid", Value: orderID}}
 	update := bson.D{{Key: "$set", Value: bson.D{
 		{Key: "status", Value: status},

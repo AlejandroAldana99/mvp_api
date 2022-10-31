@@ -11,22 +11,38 @@ import (
 )
 
 // Repositories
-func newCandidateDataRepository(collection *mongo.Collection) *repositories.CandidateData {
-	return &repositories.CandidateData{
-		MongoCollection: collection,
-		Config:          config.GetConfig(),
+func newOrderRepository(client *mongo.Database) *repositories.OrderRepository {
+	return &repositories.OrderRepository{
+		Config:  config.GetConfig(),
+		MongoDB: client,
+	}
+}
+
+func newUserRepository(client *mongo.Database) *repositories.UserRepository {
+	return &repositories.UserRepository{
+		Config:  config.GetConfig(),
+		MongoDB: client,
 	}
 }
 
 // Services
-func newCandidateDataService(repo *repositories.CandidateData) *services.CandidateData {
-	return &services.CandidateData{Repository: repo}
+func newOrderService(repository *repositories.OrderRepository) *services.OrderService {
+	return &services.OrderService{
+		Repository: repository,
+	}
+}
+
+func newUserService(repository *repositories.UserRepository) *services.UserService {
+	return &services.UserService{
+		Repository: repository,
+	}
 }
 
 // Controllers
-func newCandidateDataController(service *services.CandidateData) *controllers.CandidateData {
-	return &controllers.CandidateData{
-		Service: service,
+func newController(serviceOrder *services.OrderService, serviceUser *services.UserService) *controllers.ControllerData {
+	return &controllers.ControllerData{
+		ServiceOrder: serviceOrder,
+		ServiceUser:  serviceUser,
 	}
 }
 
@@ -47,11 +63,11 @@ func BuildContainer() *dig.Container {
 	container := dig.New()
 	_ = container.Provide(database.NewMongoDBClient)
 	_ = container.Provide(database.NewMongoCollection)
-	_ = container.Provide(newCandidateDataRepository)
-	_ = container.Provide(newHealthUserCandidateService)
-	_ = container.Provide(newCandidateDataService)
-	_ = container.Provide(newHealthController)
-	_ = container.Provide(newCandidateDataController)
+	_ = container.Provide(newOrderRepository)
+	_ = container.Provide(newUserRepository)
+	_ = container.Provide(newOrderService)
+	_ = container.Provide(newUserService)
+	_ = container.Provide(newController)
 
 	return container
 }
