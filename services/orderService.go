@@ -29,8 +29,29 @@ func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
 }
 
 func (service OrderService) CreateOrder(data models.OrderData) error {
+	// Add time
 	data.TimeRegistry = time.Now()
-	data.Package[0] = completeSize(data.Package[0])
+	// Valid status
+	if !constants.StatusList[data.Status] {
+		err := e.New("Invalid Status")
+		logger.Error("services", "UpdateOrderStatus", err.Error())
+		return errors.HandleServiceError(err)
+	}
+	// Valid coordinates
+	if !validCoordinates(data.Coordinates.Latitude, data.Coordinates.Longitude) {
+		err := e.New("Invalid Coordinates")
+		logger.Error("services", "UpdateOrderStatus", err.Error())
+		return errors.HandleServiceError(err)
+	}
+	// Read packages and bussines rules
+	for i := range data.Packages {
+		sp := false
+		data.Packages[i], sp = completeSize(data.Packages[i])
+		if sp {
+			data.Description = "Special Package: Special deal is required."
+		}
+	}
+
 	err := service.Repository.CreateOrder(data)
 	if err != nil {
 		logger.Error("services", "CreateOrder", err.Error())

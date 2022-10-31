@@ -7,22 +7,25 @@ import (
 	"github.com/AlejandroAldana99/mvp_api/models"
 )
 
-func completeSize(data models.PackageData) models.PackageData {
+func validCoordinates(lat float64, lng float64) bool {
+	return (lat > -90.0 && lat < 90.0) && (lng > -180.0 && lng < 180.0)
+}
+
+func completeSize(data models.PackageData) (models.PackageData, bool) {
+	special := false
 	if data.Weight < constants.LimitWeightS {
 		data.Size = constants.MeasureS
-		return data
 	} else if data.Weight < constants.LimitWeightM {
 		data.Size = constants.MeasureM
-		return data
 	} else if data.Weight < constants.LimitWeightL {
 		data.Size = constants.MeasureL
-		return data
 	} else {
 		data.Size = constants.MeasureSpecial
 		data.Service = constants.NameSpecialService
+		special = true
 	}
 
-	return data
+	return data, special
 }
 
 func compareTime(start time.Time, orderTime time.Time) bool {

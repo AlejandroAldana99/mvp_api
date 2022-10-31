@@ -10,6 +10,7 @@ type OrderData struct {
 	Status          string          `json:"status"`
 	Address         AddressData     `json:"addred"`
 	AddressDelivery AddressData     `json:"addressdelivery"`
-	Package         []PackageData   `json:"package"`
+	Packages        []PackageData   `json:"package"`
 	Coordinates     CoordinatesData `json:"coordinates"`
+	Description     string          `json:"description,omitempty"`
 }
