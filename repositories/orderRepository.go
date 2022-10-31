@@ -20,7 +20,7 @@ type OrderData struct {
 func (repo OrderData) GetOrder(orderID string) (models.OrderData, error) {
 	t := time.Now()
 	var order models.OrderData
-	err := repo.MongoDB.Collection("orders").FindOne(context.TODO(), bson.D{{"orderid", orderID}}).
+	err := repo.MongoDB.Collection("orders").FindOne(context.TODO(), bson.D{{Key: "orderid", Value: orderID}}).
 		Decode(&order)
 
 	if err != nil {
@@ -48,9 +48,10 @@ func (repo OrderData) CreateOrder(data models.OrderData) error {
 }
 
 func (repo OrderData) UpdateOrderStatus(orderID string, status string) error {
-
-	filter := bson.D{{"status", status}}
-	update := bson.D{{"$set", bson.D{{"orderid", orderID}}}}
+	filter := bson.D{{Key: "orderid", Value: orderID}}
+	update := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "status", Value: status},
+	}}}
 
 	_, err := repo.MongoDB.Collection("orders").UpdateOne(context.TODO(), filter, update)
 	if err != nil {
