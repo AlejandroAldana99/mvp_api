@@ -1,6 +1,10 @@
 package services
 
 import (
+	e "errors"
+	"time"
+
+	"github.com/AlejandroAldana99/mvp_api/constants"
 	"github.com/AlejandroAldana99/mvp_api/errors"
 	"github.com/AlejandroAldana99/mvp_api/libs/logger"
 	"github.com/AlejandroAldana99/mvp_api/models"
@@ -15,10 +19,7 @@ type OrderService struct {
 
 // GetCandidateData :
 func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
-	var order models.OrderData
-	var err error
-	order, err = service.Repository.GetOrder(orderID)
-
+	order, err := service.Repository.GetOrder(orderID)
 	if err != nil {
 		logger.Error("services", "GetOrder", err.Error())
 		return order, errors.HandleServiceError(err)
@@ -28,6 +29,7 @@ func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
 }
 
 func (service OrderService) CreateOrder(data models.OrderData) error {
+	data.TimeRegistry = time.Now()
 	data.Package[0] = completeSize(data.Package[0])
 	err := service.Repository.CreateOrder(data)
 	if err != nil {
@@ -39,10 +41,38 @@ func (service OrderService) CreateOrder(data models.OrderData) error {
 }
 
 func (service OrderService) UpdateOrderStatus(orderID string, status string) error {
-	err := service.Repository.UpdateOrderStatus(orderID, status)
-	if err != nil {
+	if !constants.StatusList[status] {
+		err := e.New("Invalid Status")
 		logger.Error("services", "UpdateOrderStatus", err.Error())
 		return errors.HandleServiceError(err)
+	}
+
+	// Cancelation statement
+	if status == constants.CancelStatus {
+		data, dErr := service.Repository.GetOrder(orderID)
+		if dErr != nil {
+			logger.Error("services", "CancelOrder", dErr.Error())
+			return errors.HandleServiceError(dErr)
+		}
+
+		if !compareTime(data.TimeRegistry, time.Now()) && !compareStatus(data.Status) {
+			err := e.New("Non-cancellable Order")
+			logger.Error("services", "CancelOrder", err.Error())
+			return errors.HandleServiceError(err)
+		}
+
+		err := service.Repository.UpdateOrderStatus(orderID, status)
+		if err != nil {
+			logger.Error("services", "CancelOrder", err.Error())
+			return errors.HandleServiceError(err)
+		}
+		// Update statement
+	} else {
+		err := service.Repository.UpdateOrderStatus(orderID, status)
+		if err != nil {
+			logger.Error("services", "UpdateOrderStatus", err.Error())
+			return errors.HandleServiceError(err)
+		}
 	}
 
 	return nil

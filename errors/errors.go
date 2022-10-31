@@ -50,10 +50,6 @@ func HandleServiceError(err error) error {
 		status = http.StatusBadRequest
 		code = InvalidParameters
 		break
-	case "sql: no rows in result set":
-		status = http.StatusNotFound
-		code = UserNotFound
-		break
 	case "mongo: no documents in result":
 		status = http.StatusNotFound
 		code = UserNotFound

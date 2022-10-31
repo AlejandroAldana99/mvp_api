@@ -28,31 +28,21 @@ func (controller ControllerData) GetOrderData(c echo.Context) error {
 }
 
 func (controller ControllerData) CreateOrderData(c echo.Context) error {
-	var order models.OrderData
-	userID := strings.ToLower(c.Param("orderID"))
-	data, err := controller.ServiceOrder.GetOrder(userID)
-
-	if err != nil {
-		return err
+	dto := c.Get("dto").(models.OrderData)
+	err := controller.ServiceOrder.CreateOrder(dto)
+	if resp.StatusCode == http.StatusCreated {
+		return c.JSON(resp.StatusCode, resp.Success)
 	}
-
-	return c.JSON(http.StatusOK, data)
+	return c.JSON(resp.StatusCode, resp.Errors)
 }
 
 // RefreshCandidateData :
-func (controller ControllerData) RefreshCandidateData(c echo.Context) error {
-	var data models.CandidateData
-	userID := c.Param("userID")
-
-	if e := c.Bind(&data); e != nil {
-		return e
+func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
+	orderID := strings.ToLower(c.QueryParam("orderid"))
+	status := strings.ToLower(c.QueryParam("status"))
+	err := controller.ServiceOrder.UpdateOrderStatus(orderID, status)
+	if resp.StatusCode == http.StatusCreated {
+		return c.JSON(resp.StatusCode, resp.Success)
 	}
-
-	err := controller.ServiceOrder.RefreshCandidateData(userID, data)
-
-	if err != nil {
-		return err
-	}
-
-	return c.NoContent(http.StatusCreated)
+	return c.JSON(resp.StatusCode, resp.Errors)
 }

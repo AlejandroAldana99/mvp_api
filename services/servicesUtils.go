@@ -1,6 +1,8 @@
 package services
 
 import (
+	"time"
+
 	"github.com/AlejandroAldana99/mvp_api/constants"
 	"github.com/AlejandroAldana99/mvp_api/models"
 )
@@ -21,4 +23,13 @@ func completeSize(data models.PackageData) models.PackageData {
 	}
 
 	return data
+}
+
+func compareTime(start time.Time, orderTime time.Time) bool {
+	end := start.Add(time.Minute * 2)
+	return orderTime.After(start) && orderTime.Before(end)
+}
+
+func compareStatus(orderStatus string) bool {
+	return orderStatus != constants.OnWayStatus && orderStatus != constants.DeliveredStatus
 }

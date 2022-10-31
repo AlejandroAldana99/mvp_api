@@ -60,8 +60,9 @@ func validateOrderModel(dto models.OrderData) error {
 	validate = validator.New()
 	err := validate.Struct(dto)
 	if err != nil {
-		validationErrors := err.(validator.ValidationErrors)
-		errs.Errors = AppendErrors(validationErrors)
+		// validationErrors := err.(validator.ValidationErrors)
+		// errs.Errors = AppendErrors(validationErrors)
+		return err
 	}
-	return errs
+	return nil
 }

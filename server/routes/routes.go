@@ -28,7 +28,7 @@ func init() {
 	controllersProvider := di.BuildContainer()
 	err := controllersProvider.Invoke(func(
 		healthController *controllers.HealthController,
-		candidateData *controllers.CandidateData,
+		controller *controllers.ControllerData,
 	) {
 		ServiceRoutes = Routes{
 			Route{
@@ -46,26 +46,26 @@ func init() {
 			Route{
 				Method:      http.MethodGet,
 				Pattern:     "/mvp/order/:orderID",
-				HandlerFunc: middleware.ParamsValidator(candidateData.GetCandidateData),
+				HandlerFunc: middleware.ParamsValidator(controller.GetOrderData),
 				Name:        "GetOrder",
 			},
 			Route{
 				Method:      http.MethodPost,
 				Pattern:     "/mvp/order",
-				HandlerFunc: middleware.ParamsValidator(candidateData.RefreshCandidateData),
+				HandlerFunc: middleware.ParamsValidator(controller.CreateOrderData),
 				Name:        "CreateOrder",
 			},
 			Route{
 				Method:      http.MethodPatch,
-				Pattern:     "/mvp/order/:orderID",
-				HandlerFunc: middleware.ParamsValidator(candidateData.RefreshCandidateData),
+				Pattern:     "/mvp/order",
+				HandlerFunc: middleware.ParamsValidator(controller.UpdateOrderStatus),
 				Name:        "UpdateStatus",
 			},
 			Route{
-				Method:      http.MethodDelete,
-				Pattern:     "/mvp/oder",
+				Method:      http.MethodGet,
+				Pattern:     "/mvp/user",
 				HandlerFunc: middleware.ParamsValidator(candidateData.RefreshCandidateData),
-				Name:        "CancelOrder",
+				Name:        "CreateUser",
 			},
 			Route{
 				Method:      http.MethodPost,
