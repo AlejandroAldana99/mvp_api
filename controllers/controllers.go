@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -42,8 +41,8 @@ func (controller ControllerData) CreateOrderData(c echo.Context) error {
 func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
 	orderID := strings.ToLower(c.QueryParam("orderid"))
 	status := strings.ToLower(c.QueryParam("status"))
-	role := strings.ToLower(c.Param("role"))
-	err := controller.ServiceOrder.UpdateOrderStatus(orderID, status, role)
+	role := c.Get("role")
+	err := controller.ServiceOrder.UpdateOrderStatus(orderID, status, role.(string))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -55,8 +54,7 @@ func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
 
 func (controller ControllerData) GetUserData(c echo.Context) error {
 	userID := strings.ToLower(c.Param("id"))
-	role := c.Param("role")
-	fmt.Println(role)
+	role := c.Get("role")
 	if role != constants.AdminRole {
 		err := errors.New("Invalid Role")
 		return c.JSON(http.StatusUnauthorized, err)
@@ -71,7 +69,7 @@ func (controller ControllerData) GetUserData(c echo.Context) error {
 
 func (controller ControllerData) CreateUserData(c echo.Context) error {
 	dto := c.Get("dto").(models.UserData)
-	role := strings.ToLower(c.Param("role"))
+	role := c.Get("role")
 	if role != constants.AdminRole {
 		err := errors.New("Invalid Role")
 		return c.JSON(http.StatusUnauthorized, err)

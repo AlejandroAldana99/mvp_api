@@ -18,18 +18,13 @@ var validate *validator.Validate
 
 func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userID := strings.ToLower(c.Param("id"))
 		header := c.Request().Header.Get(constants.GenericHeader)
 		if len(header) == 0 {
-			c.SetParamNames("role")
-			c.SetParamValues(constants.GenericName)
+			c.Set("role", constants.GenericName)
 		} else {
 			jwt := strings.Split(header, " ")[1]
 			role, _ := libs.DecodeJWT(jwt)
-			c.SetParamNames("id")
-			c.SetParamValues(userID)
-			c.SetParamNames("role")
-			c.SetParamValues(role)
+			c.Set("role", role)
 		}
 		return next(c)
 	}
