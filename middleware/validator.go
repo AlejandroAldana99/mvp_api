@@ -80,12 +80,12 @@ func ValidateOrderBody(next echo.HandlerFunc) echo.HandlerFunc {
 
 func ValidateUserBody(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) (e error) {
-		dto, err := orderBodyToStruct(c)
+		dto, err := userBodyToStruct(c)
 		if err != nil {
 			logger.Error("middleware", "ValidateBody", err.Error())
 			return er.HandleServiceError(errors.New("invalid body"))
 		}
-		errValidation := validateOrderModel(dto)
+		errValidation := validateUserModel(dto)
 		if errValidation != nil {
 			return er.HandleServiceError(errValidation)
 		}

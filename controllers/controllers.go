@@ -66,9 +66,9 @@ func (controller ControllerData) CreateUserData(c echo.Context) error {
 }
 
 func (controller ControllerData) Login(c echo.Context) error {
-	email := strings.ToLower(c.QueryParam("email"))
+	user := strings.ToLower(c.QueryParam("user"))
 	password := strings.ToLower(c.QueryParam("password"))
-	login, err := controller.ServiceUser.Login(email, password)
+	login, err := controller.ServiceUser.Login(user, password)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
