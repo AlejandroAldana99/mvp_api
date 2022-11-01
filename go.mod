@@ -13,6 +13,7 @@ require (
 	go.mongodb.org/mongo-driver v1.10.3
 	go.uber.org/dig v1.15.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
 
 require (
