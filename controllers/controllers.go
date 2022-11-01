@@ -72,11 +72,6 @@ func (controller ControllerData) GetUserData(c echo.Context) error {
 
 func (controller ControllerData) CreateUserData(c echo.Context) error {
 	dto := c.Get("dto").(models.UserData)
-	role := c.Get("role")
-	if role != constants.AdminRole {
-		err := errors.New("Invalid Role")
-		return c.JSON(http.StatusUnauthorized, err)
-	}
 	err := controller.ServiceUser.CreateUser(dto)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)

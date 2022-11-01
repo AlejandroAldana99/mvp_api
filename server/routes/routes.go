@@ -70,7 +70,7 @@ func init() {
 			Route{
 				Method:      http.MethodPost,
 				Pattern:     "/mvp/user",
-				HandlerFunc: middleware.ValidateUserBody(middleware.ValidateToken(controller.CreateUserData)),
+				HandlerFunc: middleware.ValidateUserBody(controller.CreateUserData),
 				Name:        "CreateUser",
 			},
 			Route{
