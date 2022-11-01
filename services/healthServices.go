@@ -7,7 +7,7 @@ import (
 	"github.com/AlejandroAldana99/mvp_api/models"
 )
 
-type HealthCandidateData struct{}
+type HealthService struct{}
 
 func updateHealthDetails(details *models.HealthComponentDetail, now time.Time, statusCode int) {
 	details.Status = "fail"
@@ -19,7 +19,7 @@ func updateHealthDetails(details *models.HealthComponentDetail, now time.Time, s
 }
 
 // CheckPod :
-func (service *HealthCandidateData) CheckPod(chanHealth chan models.HealthComponentDetail) {
+func (service *HealthService) CheckPod(chanHealth chan models.HealthComponentDetail) {
 	now := time.Now()
 	details := models.HealthComponentDetail{
 		Name: "instance",

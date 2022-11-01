@@ -46,7 +46,7 @@ func newController(serviceOrder *services.OrderService, serviceUser *services.Us
 	}
 }
 
-func newHealthController(client *mongo.Client, service *services.HealthCandidateData) *controllers.HealthController {
+func newHealthController(client *mongo.Client, service *services.HealthService) *controllers.HealthController {
 	return &controllers.HealthController{
 		Configuration: config.GetConfig(),
 		MongoClient:   client,
@@ -54,8 +54,8 @@ func newHealthController(client *mongo.Client, service *services.HealthCandidate
 	}
 }
 
-func newHealthUserCandidateService() *services.HealthCandidateData {
-	return &services.HealthCandidateData{}
+func newHealthService() *services.HealthService {
+	return &services.HealthService{}
 }
 
 // BuildContainer :
@@ -68,6 +68,8 @@ func BuildContainer() *dig.Container {
 	_ = container.Provide(newOrderService)
 	_ = container.Provide(newUserService)
 	_ = container.Provide(newController)
+	_ = container.Provide(newHealthService)
+	_ = container.Provide(newHealthController)
 
 	return container
 }

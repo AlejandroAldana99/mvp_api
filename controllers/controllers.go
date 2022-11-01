@@ -9,13 +9,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// CandidateData :
 type ControllerData struct {
 	ServiceOrder services.IOrderService
 	ServiceUser  services.IUserService
 }
 
-// GetCandidateData :
 func (controller ControllerData) GetOrderData(c echo.Context) error {
 	orderID := strings.ToLower(c.Param("id"))
 	data, err := controller.ServiceOrder.GetOrder(orderID)
@@ -36,7 +34,6 @@ func (controller ControllerData) CreateOrderData(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Success")
 }
 
-// RefreshCandidateData :
 func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
 	orderID := strings.ToLower(c.QueryParam("orderid"))
 	status := strings.ToLower(c.QueryParam("status"))
@@ -48,7 +45,6 @@ func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Success")
 }
 
-// GetCandidateData :
 func (controller ControllerData) GetUserData(c echo.Context) error {
 	userID := strings.ToLower(c.Param("id"))
 	data, err := controller.ServiceUser.GetUser(userID)

@@ -21,7 +21,7 @@ const millisecondsEq = 1000000.0
 type HealthController struct {
 	Configuration config.Configuration
 	MongoClient   *mongo.Client
-	ServiceHealth services.IHealthCandidateData
+	ServiceHealth services.IHealthService
 }
 
 // HealthCheck :
@@ -30,7 +30,7 @@ func (controller *HealthController) HealthCheck(c echo.Context) error {
 	health := models.HealthStatus{
 		Version:     "1.0",
 		Status:      status,
-		Description: "API Candidate Data Pod HealthCheck",
+		Description: "API Pod HealthCheck",
 		Details:     []models.HealthComponentDetail{},
 	}
 
@@ -59,7 +59,7 @@ func (controller *HealthController) HealthCheckDependencies(c echo.Context) erro
 
 	return c.JSON(httpStatus, models.HealthStatus{
 		Status:      status,
-		Description: "API Candidate Data health status",
+		Description: "API health status",
 		Version:     "1.0",
 		Details: []models.HealthComponentDetail{
 			mongoDetail,

@@ -17,7 +17,6 @@ type OrderService struct {
 	Repository repositories.IOrderRepository
 }
 
-// GetCandidateData :
 func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
 	order, err := service.Repository.GetOrder(orderID)
 	if err != nil {

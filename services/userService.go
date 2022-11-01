@@ -17,7 +17,6 @@ type UserService struct {
 	Repository repositories.IUserRepository
 }
 
-// GetCandidateData :
 func (service UserService) GetUser(userID string) (models.UserData, error) {
 	user, err := service.Repository.GetUser(userID)
 	if err != nil {
