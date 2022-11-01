@@ -46,3 +46,19 @@ func (repo UserRepository) CreateUser(data models.UserData) error {
 
 	return nil
 }
+
+func (repo UserRepository) GetUserByEmail(email string) (models.UserData, error) {
+	t := time.Now()
+	var user models.UserData
+	err := repo.MongoDB.Collection("users").FindOne(context.TODO(), bson.D{{Key: "email", Value: email}}).
+		Decode(&user)
+
+	if err != nil {
+		logger.Error("repositories", "GetUserData", err.Error())
+		return models.UserData{}, errors.HandleServiceError(err)
+	}
+
+	logger.Performance("repository", "GetUser", t)
+
+	return user, nil
+}

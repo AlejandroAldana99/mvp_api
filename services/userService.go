@@ -45,15 +45,18 @@ func (service UserService) CreateUser(data models.UserData) error {
 	return nil
 }
 
-func (service UserService) Login(userID string, password string) (models.LoginData, error) {
+func (service UserService) Login(user string, password string) (models.LoginData, error) {
 	var login models.LoginData
-	user, err := service.Repository.GetUser(userID)
+	userData, err := service.Repository.GetUser(user)
 	if err != nil {
-		logger.Error("services", "GetUser", err.Error())
-		return login, errors.HandleServiceError(err)
+		userData, err = service.Repository.GetUserByEmail(user)
+		if err != nil {
+			logger.Error("services", "GetUser", err.Error())
+			return login, errors.HandleServiceError(err)
+		}
 	}
 
-	cErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	cErr := bcrypt.CompareHashAndPassword([]byte(userData.Password), []byte(password))
 	if cErr != nil && cErr == bcrypt.ErrMismatchedHashAndPassword {
 		err := e.New("Invalid login credentials")
 		logger.Error("services", "Login", err.Error())
@@ -61,7 +64,7 @@ func (service UserService) Login(userID string, password string) (models.LoginDa
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"Role": user.Role,
+		"Role": userData.Role,
 		"nbf":  time.Now().Add(time.Hour * 72).Unix(),
 	})
 
