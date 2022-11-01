@@ -60,7 +60,7 @@ func (service OrderService) CreateOrder(data models.OrderData) error {
 	return nil
 }
 
-func (service OrderService) UpdateOrderStatus(orderID string, status string) error {
+func (service OrderService) UpdateOrderStatus(orderID string, status string, role string) error {
 	if !constants.StatusList[status] {
 		err := e.New("Invalid Status")
 		logger.Error("services", "UpdateOrderStatus", err.Error())
@@ -88,6 +88,11 @@ func (service OrderService) UpdateOrderStatus(orderID string, status string) err
 		}
 		// Update statement
 	} else {
+		if role != constants.AdminRole {
+			err := e.New("Invalid Role")
+			logger.Error("services", "UpdateOrderStatus", err.Error())
+			return errors.HandleServiceError(err)
+		}
 		err := service.Repository.UpdateOrderStatus(orderID, status)
 		if err != nil {
 			logger.Error("services", "UpdateOrderStatus", err.Error())

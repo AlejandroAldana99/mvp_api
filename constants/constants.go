@@ -17,6 +17,9 @@ const (
 	DeliveredStatus     = "entregada"
 	CancelStatus        = "cancelado"
 	GeneralStatus       = "Done"
+	GenericName         = "unknown"
+	GenericHeader       = "Authorization"
+	AdminRole           = "Admin"
 )
 
 var StatusList = map[string]bool{

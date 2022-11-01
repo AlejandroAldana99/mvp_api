@@ -65,7 +65,6 @@ func init() {
 		outputs = append(outputs, fileOutput)
 	}
 
-	//https://github.com/rs/zerolog/pull/198/files
 	multi := zerolog.MultiLevelWriter(outputs...)
 	log.Logger = zerolog.New(multi).With().Timestamp().Logger()
 

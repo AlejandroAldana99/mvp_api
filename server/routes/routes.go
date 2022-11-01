@@ -58,19 +58,19 @@ func init() {
 			Route{
 				Method:      http.MethodPatch,
 				Pattern:     "/mvp/order",
-				HandlerFunc: middleware.ParamsOrderValidator(controller.UpdateOrderStatus),
+				HandlerFunc: middleware.ParamsOrderValidator(middleware.ValidateToken(controller.UpdateOrderStatus)),
 				Name:        "UpdateStatus",
 			},
 			Route{
 				Method:      http.MethodGet,
 				Pattern:     "/mvp/user/:id",
-				HandlerFunc: middleware.ParamsValidatorID(controller.GetUserData),
-				Name:        "CreateUser",
+				HandlerFunc: middleware.ValidateToken(middleware.ParamsValidatorID(controller.GetUserData)),
+				Name:        "GetUser",
 			},
 			Route{
 				Method:      http.MethodPost,
 				Pattern:     "/mvp/user",
-				HandlerFunc: middleware.ValidateUserBody(controller.CreateUserData),
+				HandlerFunc: middleware.ValidateUserBody(middleware.ValidateToken(controller.CreateUserData)),
 				Name:        "CreateUser",
 			},
 			Route{

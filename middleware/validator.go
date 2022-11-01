@@ -4,7 +4,9 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/AlejandroAldana99/mvp_api/constants"
 	er "github.com/AlejandroAldana99/mvp_api/errors"
+	"github.com/AlejandroAldana99/mvp_api/libs"
 	"github.com/AlejandroAldana99/mvp_api/models"
 	"github.com/go-playground/validator"
 
@@ -13,6 +15,25 @@ import (
 )
 
 var validate *validator.Validate
+
+func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		userID := strings.ToLower(c.Param("id"))
+		header := c.Request().Header.Get(constants.GenericHeader)
+		if len(header) == 0 {
+			c.SetParamNames("role")
+			c.SetParamValues(constants.GenericName)
+		} else {
+			jwt := strings.Split(header, " ")[1]
+			role, _ := libs.DecodeJWT(jwt)
+			c.SetParamNames("id")
+			c.SetParamValues(userID)
+			c.SetParamNames("role")
+			c.SetParamValues(role)
+		}
+		return next(c)
+	}
+}
 
 // ParamsValidator :
 func ParamsValidatorID(next echo.HandlerFunc) echo.HandlerFunc {

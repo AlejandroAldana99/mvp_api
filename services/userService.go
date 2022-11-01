@@ -64,7 +64,7 @@ func (service UserService) Login(user string, password string) (models.LoginData
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"Role": userData.Role,
+		"role": userData.Role,
 		"nbf":  time.Now().Add(time.Hour * 72).Unix(),
 	})
 
