@@ -55,7 +55,7 @@ func (repo OrderRepository) CreateOrder(data models.OrderData) error {
 	return nil
 }
 
-func (repo OrderRepository) UpdateOrderStatus(orderID string, status string) error {
+func (repo OrderRepository) UpdateOrderStatus(orderID string, status string, refund bool) error {
 	objectId, oErr := primitive.ObjectIDFromHex(orderID)
 	if oErr != nil {
 		logger.Error("repositories", "GetUserData", oErr.Error())
@@ -64,6 +64,7 @@ func (repo OrderRepository) UpdateOrderStatus(orderID string, status string) err
 	filter := bson.D{{Key: "_id", Value: objectId}}
 	update := bson.D{{Key: "$set", Value: bson.D{
 		{Key: "status", Value: status},
+		{Key: "refund", Value: refund},
 	}}}
 
 	_, err := repo.MongoDB.Collection("orders").UpdateOne(context.TODO(), filter, update)

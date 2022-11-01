@@ -19,6 +19,7 @@ type OrderData struct {
 	Packages        []PackageData   `json:"package"`
 	Coordinates     CoordinatesData `json:"coordinates"`
 	Description     string          `json:"description,omitempty"`
+	Refund          bool            `json:"refund,omitempty" default:"false"`
 }
 
 type MyObjectID string

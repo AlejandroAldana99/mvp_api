@@ -27,20 +27,24 @@ func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
 	return order, nil
 }
 
-func (service OrderService) CreateOrder(data models.OrderData) error {
+func (service OrderService) CreateOrder(data models.OrderData) (models.ResponseData, error) {
 	// Add time
 	data.TimeRegistry = time.Now()
+	response := models.ResponseData{
+		Notification: "",
+		Status:       "Faild",
+	}
 	// Valid status
 	if !constants.StatusList[data.Status] {
 		err := e.New("Invalid Status")
 		logger.Error("services", "UpdateOrderStatus", err.Error())
-		return errors.HandleServiceError(err)
+		return response, errors.HandleServiceError(err)
 	}
 	// Valid coordinates
 	if !validCoordinates(data.Coordinates.Latitude, data.Coordinates.Longitude) {
 		err := e.New("Invalid Coordinates")
 		logger.Error("services", "UpdateOrderStatus", err.Error())
-		return errors.HandleServiceError(err)
+		return response, errors.HandleServiceError(err)
 	}
 	// Read packages and bussines rules
 	for i := range data.Packages {
@@ -48,16 +52,18 @@ func (service OrderService) CreateOrder(data models.OrderData) error {
 		data.Packages[i], sp = completeSize(data.Packages[i])
 		if sp {
 			data.Description = "Special Package: Special deal is required."
+			response.Notification = "Special Package: Special deal is required."
 		}
 	}
 
 	err := service.Repository.CreateOrder(data)
 	if err != nil {
 		logger.Error("services", "CreateOrder", err.Error())
-		return errors.HandleServiceError(err)
+		return response, errors.HandleServiceError(err)
 	}
 
-	return nil
+	response.Status = "Success"
+	return response, nil
 }
 
 func (service OrderService) UpdateOrderStatus(orderID string, status string, role string, userID string) error {
@@ -81,13 +87,18 @@ func (service OrderService) UpdateOrderStatus(orderID string, status string, rol
 			return errors.HandleServiceError(uErr)
 		}
 
-		if !compareTime(data.TimeRegistry, time.Now()) && compareStatus(data.Status) {
+		if compareStatus(data.Status) {
 			err := e.New("non-cancellable order")
 			logger.Error("services", "CancelOrder", err.Error())
 			return errors.HandleServiceError(err)
 		}
 
-		err := service.Repository.UpdateOrderStatus(orderID, status)
+		refund := false
+		if compareTime(data.TimeRegistry, time.Now()) {
+			refund = true
+		}
+
+		err := service.Repository.UpdateOrderStatus(orderID, status, refund)
 		if err != nil {
 			logger.Error("services", "CancelOrder", err.Error())
 			return errors.HandleServiceError(err)
@@ -99,7 +110,7 @@ func (service OrderService) UpdateOrderStatus(orderID string, status string, rol
 			logger.Error("services", "UpdateOrderStatus", err.Error())
 			return errors.HandleServiceError(err)
 		}
-		err := service.Repository.UpdateOrderStatus(orderID, status)
+		err := service.Repository.UpdateOrderStatus(orderID, status, false)
 		if err != nil {
 			logger.Error("services", "UpdateOrderStatus", err.Error())
 			return errors.HandleServiceError(err)

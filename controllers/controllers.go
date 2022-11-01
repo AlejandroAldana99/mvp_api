@@ -30,12 +30,12 @@ func (controller ControllerData) GetOrderData(c echo.Context) error {
 
 func (controller ControllerData) CreateOrderData(c echo.Context) error {
 	dto := c.Get("dto").(models.OrderData)
-	err := controller.ServiceOrder.CreateOrder(dto)
+	response, err := controller.ServiceOrder.CreateOrder(dto)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, "Success")
+	return c.JSON(http.StatusOK, response)
 }
 
 func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
