@@ -89,7 +89,7 @@ func (service OrderService) UpdateOrderStatus(orderID string, status string, rol
 		// Update statement
 	} else {
 		if role != constants.AdminRole {
-			err := e.New("Invalid Role")
+			err := e.New("invalid role")
 			logger.Error("services", "UpdateOrderStatus", err.Error())
 			return errors.HandleServiceError(err)
 		}

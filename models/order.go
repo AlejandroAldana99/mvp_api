@@ -9,10 +9,10 @@ import (
 )
 
 type OrderData struct {
-	OrderID         MyObjectID      `json:"orderid" bson:"_id,omitempty"`
+	OrderID         MyObjectID      `json:"orderid,omitempty" bson:"_id,omitempty"`
 	Owner           string          `json:"owner"`
-	OwnerID         string          `json:"ownerid"`
-	TimeRegistry    time.Time       `json:"timeregister"`
+	OwnerID         string          `json:"ownerid,omitempty"`
+	TimeRegistry    time.Time       `json:"timeregister,omitempty"`
 	Status          string          `json:"status"`
 	Address         AddressData     `json:"addred"`
 	AddressDelivery AddressData     `json:"addressdelivery"`

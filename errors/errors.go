@@ -9,12 +9,10 @@ import (
 )
 
 const (
-	// UserNotFound :
 	UserNotFound = iota + 1
-	// DataSourceException :
 	DataSourceException
-	// InvalidParameters :
 	InvalidParameters
+	InvalidRole
 )
 
 // ServiceErrors :
@@ -22,6 +20,7 @@ var ServiceErrors map[int]string = map[int]string{
 	UserNotFound:        "User not found",
 	DataSourceException: "Data source exception",
 	InvalidParameters:   "Invalid parameters",
+	InvalidRole:         "Invalid Role",
 }
 
 // NewAPIErrorResponse :
@@ -53,6 +52,10 @@ func HandleServiceError(err error) error {
 	case "mongo: no documents in result":
 		status = http.StatusNotFound
 		code = UserNotFound
+		break
+	case "invalid role":
+		status = http.StatusUnauthorized
+		code = InvalidRole
 		break
 	default:
 		status = http.StatusInternalServerError

@@ -9,6 +9,7 @@ import (
 	"github.com/AlejandroAldana99/mvp_api/libs/logger"
 	"github.com/AlejandroAldana99/mvp_api/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -20,8 +21,15 @@ type OrderRepository struct {
 func (repo OrderRepository) GetOrder(orderID string) (models.OrderData, error) {
 	t := time.Now()
 	var order models.OrderData
-	err := repo.MongoDB.Collection("orders").FindOne(context.TODO(), bson.D{{Key: "orderid", Value: orderID}}).
-		Decode(&order)
+	objectId, oErr := primitive.ObjectIDFromHex(orderID)
+	if oErr != nil {
+		logger.Error("repositories", "GetOrder", oErr.Error())
+		return models.OrderData{}, errors.HandleServiceError(oErr)
+	}
+	err := repo.MongoDB.Collection("orders").FindOne(
+		context.TODO(),
+		bson.D{{Key: "_id", Value: objectId}},
+	).Decode(&order)
 
 	if err != nil {
 		logger.Error("repositories", "GetOrderData", err.Error())
@@ -48,7 +56,12 @@ func (repo OrderRepository) CreateOrder(data models.OrderData) error {
 }
 
 func (repo OrderRepository) UpdateOrderStatus(orderID string, status string) error {
-	filter := bson.D{{Key: "orderid", Value: orderID}}
+	objectId, oErr := primitive.ObjectIDFromHex(orderID)
+	if oErr != nil {
+		logger.Error("repositories", "GetUserData", oErr.Error())
+		return errors.HandleServiceError(oErr)
+	}
+	filter := bson.D{{Key: "_id", Value: objectId}}
 	update := bson.D{{Key: "$set", Value: bson.D{
 		{Key: "status", Value: status},
 	}}}

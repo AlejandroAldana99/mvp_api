@@ -47,7 +47,7 @@ func ParamsValidatorID(next echo.HandlerFunc) echo.HandlerFunc {
 
 func ParamsOrderValidator(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) (e error) {
-		id := strings.ToLower(c.QueryParam("orderID"))
+		id := strings.ToLower(c.QueryParam("orderid"))
 		sts := strings.ToLower(c.QueryParam("status"))
 
 		if id == "undefined" || id == "null" || id == "" || sts == "undefined" || sts == "null" || sts == "" {
