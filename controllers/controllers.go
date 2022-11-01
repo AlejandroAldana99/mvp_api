@@ -59,7 +59,7 @@ func (controller ControllerData) GetUserData(c echo.Context) error {
 	userID := strings.ToLower(c.Param("id"))
 	role := c.Get("role")
 	if role != constants.AdminRole {
-		err := errors.New("Invalid Role")
+		err := errors.New("invalid role")
 		return c.JSON(http.StatusUnauthorized, err)
 	}
 	data, err := controller.ServiceUser.GetUser(userID)
