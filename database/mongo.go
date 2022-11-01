@@ -52,7 +52,6 @@ func buildConnectionOptions(conf config.Configuration) *options.ClientOptions {
 		})
 
 		opt.SetHosts(strings.Split(conf.MongoHost, ","))
-		opt.SetReplicaSet(conf.MongoReplicaSet)
 
 		return opt
 	}
