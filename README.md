@@ -13,7 +13,7 @@ Requisitos previos:
 
 <br>
 
-Ejecusion VS Code:
+Ejecucion VS Code:
 ````
 1. Ir al archivo main.go dentro de VS Code y correr (Tecla F5)
 2. Comenzar a mandar peticiones a 'localhost:5050'
@@ -21,7 +21,7 @@ Ejecusion VS Code:
 
 <br>
 
-Ejecusion Simple:
+Ejecucion Simple:
 ````
 1. Ejecutar el comando 'go run main.go' dentro de este directorio
 2. Comenzar a mandar peticiones a 'localhost:5050'
