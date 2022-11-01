@@ -2,14 +2,13 @@ package services
 
 import (
 	e "errors"
-	"time"
 
 	"github.com/AlejandroAldana99/mvp_api/constants"
 	"github.com/AlejandroAldana99/mvp_api/errors"
+	"github.com/AlejandroAldana99/mvp_api/libs"
 	"github.com/AlejandroAldana99/mvp_api/libs/logger"
 	"github.com/AlejandroAldana99/mvp_api/models"
 	"github.com/AlejandroAldana99/mvp_api/repositories"
-	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -63,17 +62,7 @@ func (service UserService) Login(user string, password string) (models.LoginData
 		return login, errors.HandleServiceError(err)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"role": userData.Role,
-		"nbf":  time.Now().Add(time.Hour * 72).Unix(),
-	})
-
-	// Sign and get the complete encoded token as a string using the secret
-	tokenString, tErr := token.SignedString([]byte("secret"))
-	if tErr != nil {
-		logger.Error("services", "Login", tErr.Error())
-		return login, errors.HandleServiceError(tErr)
-	}
+	tokenString := libs.EncodeJWT(string(userData.UserID), userData.Role)
 
 	login.Token = tokenString
 	login.Status = constants.GeneralStatus

@@ -60,9 +60,9 @@ func (service OrderService) CreateOrder(data models.OrderData) error {
 	return nil
 }
 
-func (service OrderService) UpdateOrderStatus(orderID string, status string, role string) error {
+func (service OrderService) UpdateOrderStatus(orderID string, status string, role string, userID string) error {
 	if !constants.StatusList[status] {
-		err := e.New("Invalid Status")
+		err := e.New("invalid status")
 		logger.Error("services", "UpdateOrderStatus", err.Error())
 		return errors.HandleServiceError(err)
 	}
@@ -75,8 +75,14 @@ func (service OrderService) UpdateOrderStatus(orderID string, status string, rol
 			return errors.HandleServiceError(dErr)
 		}
 
-		if !compareTime(data.TimeRegistry, time.Now()) && !compareStatus(data.Status) {
-			err := e.New("Non-cancellable Order")
+		if data.OwnerID != userID {
+			uErr := e.New("invalid order")
+			logger.Error("services", "CancelOrder", uErr.Error())
+			return errors.HandleServiceError(uErr)
+		}
+
+		if !compareTime(data.TimeRegistry, time.Now()) && compareStatus(data.Status) {
+			err := e.New("non-cancellable order")
 			logger.Error("services", "CancelOrder", err.Error())
 			return errors.HandleServiceError(err)
 		}

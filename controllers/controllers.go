@@ -42,7 +42,8 @@ func (controller ControllerData) UpdateOrderStatus(c echo.Context) error {
 	orderID := strings.ToLower(c.QueryParam("orderid"))
 	status := strings.ToLower(c.QueryParam("status"))
 	role := c.Get("role")
-	err := controller.ServiceOrder.UpdateOrderStatus(orderID, status, role.(string))
+	userID := c.Get("userid")
+	err := controller.ServiceOrder.UpdateOrderStatus(orderID, status, role.(string), userID.(string))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

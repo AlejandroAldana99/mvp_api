@@ -21,10 +21,12 @@ func ValidateToken(next echo.HandlerFunc) echo.HandlerFunc {
 		header := c.Request().Header.Get(constants.GenericHeader)
 		if len(header) == 0 {
 			c.Set("role", constants.GenericName)
+			c.Set("userid", "")
 		} else {
 			jwt := strings.Split(header, " ")[1]
-			role, _ := libs.DecodeJWT(jwt)
+			role, id, _ := libs.DecodeJWT(jwt)
 			c.Set("role", role)
+			c.Set("userid", id)
 		}
 		return next(c)
 	}

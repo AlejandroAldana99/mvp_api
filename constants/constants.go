@@ -15,11 +15,12 @@ const (
 	StationStatus       = "en_estacion"
 	OnWayStatus         = "en_ruta"
 	DeliveredStatus     = "entregada"
-	CancelStatus        = "cancelado"
+	CancelStatus        = "cancelada"
 	GeneralStatus       = "Done"
 	GenericName         = "unknown"
 	GenericHeader       = "Authorization"
 	AdminRole           = "Admin"
+	Key                 = "secret"
 )
 
 var StatusList = map[string]bool{
@@ -28,5 +29,5 @@ var StatusList = map[string]bool{
 	"en_estacion": true,
 	"en_ruta":     true,
 	"entregada":   true,
-	"cancelado":   true,
+	"cancelada":   true,
 }

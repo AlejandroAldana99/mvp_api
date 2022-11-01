@@ -13,6 +13,9 @@ const (
 	DataSourceException
 	InvalidParameters
 	InvalidRole
+	NonCancellable
+	InvalidOrder
+	InvalidStatus
 )
 
 // ServiceErrors :
@@ -21,6 +24,9 @@ var ServiceErrors map[int]string = map[int]string{
 	DataSourceException: "Data source exception",
 	InvalidParameters:   "Invalid parameters",
 	InvalidRole:         "Invalid Role",
+	NonCancellable:      "Non-cancellable Order",
+	InvalidOrder:        "Invalid Order",
+	InvalidStatus:       "Invalid Status",
 }
 
 // NewAPIErrorResponse :
@@ -56,6 +62,18 @@ func HandleServiceError(err error) error {
 	case "invalid role":
 		status = http.StatusUnauthorized
 		code = InvalidRole
+		break
+	case "non-cancellable order":
+		status = http.StatusBadRequest
+		code = NonCancellable
+		break
+	case "invalid order":
+		status = http.StatusUnauthorized
+		code = InvalidOrder
+		break
+	case "invalid status":
+		status = http.StatusUnauthorized
+		code = InvalidStatus
 		break
 	default:
 		status = http.StatusInternalServerError

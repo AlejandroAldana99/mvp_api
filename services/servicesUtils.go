@@ -34,5 +34,5 @@ func compareTime(start time.Time, orderTime time.Time) bool {
 }
 
 func compareStatus(orderStatus string) bool {
-	return orderStatus != constants.OnWayStatus && orderStatus != constants.DeliveredStatus
+	return orderStatus == constants.OnWayStatus || orderStatus == constants.DeliveredStatus
 }
