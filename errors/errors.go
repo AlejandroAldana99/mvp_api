@@ -19,7 +19,7 @@ const (
 
 // ServiceErrors :
 var ServiceErrors map[int]string = map[int]string{
-	UserNotFound:        "Candidate not found",
+	UserNotFound:        "User not found",
 	DataSourceException: "Data source exception",
 	InvalidParameters:   "Invalid parameters",
 }
