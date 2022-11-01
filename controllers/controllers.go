@@ -20,7 +20,9 @@ type ControllerData struct {
 
 func (controller ControllerData) GetOrderData(c echo.Context) error {
 	orderID := strings.ToLower(c.Param("id"))
-	data, err := controller.ServiceOrder.GetOrder(orderID)
+	role := c.Get("role")
+	userID := c.Get("userid")
+	data, err := controller.ServiceOrder.GetOrder(orderID, userID.(string), role.(string))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

@@ -93,7 +93,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5050/mvp/user/login?user=example@email.com&password=abc1234",
+					"raw": "http://localhost:5050/mvp/user/login?user=example2@email.com&password=abc1234",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -107,7 +107,7 @@
 					"query": [
 						{
 							"key": "user",
-							"value": "example@email.com"
+							"value": "example2@email.com"
 						},
 						{
 							"key": "password",
@@ -334,9 +334,15 @@
 			"name": "Get Order",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2Njc1MzY5OTksInJvbGUiOiJDbGllbnRlIiwidXNlcmlkIjoiNjM2MDZlOTA1N2FmNWEwODg5NzJmM2FjIn0.FnTh2JfGNcqCMR8DS-EyWYf4wYHGgW1TMzsrmKWJm4E",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:5050/mvp/order/6360a130251fd8376e2d853d",
+					"raw": "http://localhost:5050/mvp/order/63608d51abb1e5c2fad5b319",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -345,7 +351,7 @@
 					"path": [
 						"mvp",
 						"order",
-						"6360a130251fd8376e2d853d"
+						"63608d51abb1e5c2fad5b319"
 					]
 				}
 			},

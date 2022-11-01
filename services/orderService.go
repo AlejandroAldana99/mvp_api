@@ -17,11 +17,17 @@ type OrderService struct {
 	Repository repositories.IOrderRepository
 }
 
-func (service OrderService) GetOrder(orderID string) (models.OrderData, error) {
+func (service OrderService) GetOrder(orderID string, userID string, role string) (models.OrderData, error) {
 	order, err := service.Repository.GetOrder(orderID)
 	if err != nil {
 		logger.Error("services", "GetOrder", err.Error())
 		return order, errors.HandleServiceError(err)
+	}
+
+	if order.OwnerID != userID && role != constants.AdminRole {
+		uErr := e.New("invalid order")
+		logger.Error("services", "GetOrder", uErr.Error())
+		return models.OrderData{}, errors.HandleServiceError(uErr)
 	}
 
 	return order, nil

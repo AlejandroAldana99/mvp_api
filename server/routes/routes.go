@@ -46,7 +46,7 @@ func init() {
 			Route{
 				Method:      http.MethodGet,
 				Pattern:     "/mvp/order/:id",
-				HandlerFunc: middleware.ParamsValidatorID(controller.GetOrderData),
+				HandlerFunc: middleware.ParamsValidatorID(middleware.ValidateToken(controller.GetOrderData)),
 				Name:        "GetOrder",
 			},
 			Route{
